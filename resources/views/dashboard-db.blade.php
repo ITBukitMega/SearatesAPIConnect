@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Container Tracking Dashboard | BM Logistics</title>
+    <title>Container Tracking Dashboard | BM Logistics (Database)</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -154,8 +154,8 @@
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Searching...</h3>
-                    <p class="text-gray-600">Please wait while we fetch your tracking information</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Searching Database...</h3>
+                    <p class="text-gray-600">Please wait while we fetch your tracking information from local database</p>
                 </div>
             </div>
 
@@ -362,7 +362,6 @@
         }
 
         // Render route overview
-        // Simple Route Overview - Just handle predictive ETA logic
         function renderRouteOverview() {
             const container = document.getElementById('routeOverview');
 
@@ -391,44 +390,44 @@
                 }
 
                 container.innerHTML = `
-            <div class="w-full relative">
-                <!-- Route Line -->
-                <div class="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-y-1/2 rounded-full"></div>
-                
-                <!-- Origin -->
-                <div class="flex justify-between items-center relative z-10">
-                    <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-lg max-w-xs">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-4 h-4 bg-blue-600 rounded-full"></div>
-                            <h3 class="font-bold text-gray-900">${polLocation.name}${polLocation.country_code ? ', ' + polLocation.country_code : ''}</h3>
+                    <div class="w-full relative">
+                        <!-- Route Line -->
+                        <div class="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-y-1/2 rounded-full"></div>
+                        
+                        <!-- Origin -->
+                        <div class="flex justify-between items-center relative z-10">
+                            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-lg max-w-xs">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-4 h-4 bg-blue-600 rounded-full"></div>
+                                    <h3 class="font-bold text-gray-900">${polLocation.name}${polLocation.country_code ? ', ' + polLocation.country_code : ''}</h3>
+                                </div>
+                                <p class="text-sm text-gray-600 font-medium">ATD</p>
+                                <p class="text-blue-600 font-bold">${polDate}</p>
+                            </div>
+                            
+                            <!-- Destination -->
+                            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-lg max-w-xs">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
+                                    <h3 class="font-bold text-gray-900">${podLocation.name}${podLocation.country_code ? ', ' + podLocation.country_code : ''}</h3>
+                                </div>
+                                <p class="text-sm text-gray-600 font-medium">${podLabel}</p>
+                                <p class="text-purple-600 font-bold">${podDate}</p>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 font-medium">ATD</p>
-                        <p class="text-blue-600 font-bold">${polDate}</p>
                     </div>
-                    
-                    <!-- Destination -->
-                    <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-lg max-w-xs">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
-                            <h3 class="font-bold text-gray-900">${podLocation.name}${podLocation.country_code ? ', ' + podLocation.country_code : ''}</h3>
-                        </div>
-                        <p class="text-sm text-gray-600 font-medium">${podLabel}</p>
-                        <p class="text-purple-600 font-bold">${podDate}</p>
-                    </div>
-                </div>
-            </div>
-        `;
+                `;
             } else {
                 container.innerHTML = `
-            <div class="text-center py-8 w-full">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                </div>
-                <p class="text-gray-500">Route information not available</p>
-            </div>
-        `;
+                    <div class="text-center py-8 w-full">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">Route information not available</p>
+                    </div>
+                `;
             }
         }
 
@@ -525,20 +524,20 @@
             container.innerHTML = html;
         }
 
-        // Simple Vessel Logic - No complex badges, just the core logic
+        // Simple Vessel Logic - No complex badges, just the core logic (BLUE THEME)
         function renderVesselContent(container) {
             if (!trackingData?.vessels?.length) {
                 container.innerHTML = `
-            <div class="text-center py-20">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">No Vessel Information</h3>
-                <p class="text-gray-500">No vessel data is available for this shipment.</p>
-            </div>
-        `;
+                    <div class="text-center py-20">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">No Vessel Information</h3>
+                        <p class="text-gray-500">No vessel data is available for this shipment.</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -618,46 +617,46 @@
                 // NO FALLBACK TO ROUTE DATA - Keep N/A if no vessel-specific events found
 
                 html += `
-            <div class="space-y-6">
-                <!-- Simple Vessel Header -->
-                <div class="flex items-center space-x-4 p-6 bg-blue-50 rounded-2xl border border-blue-100">
-                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                        </svg>
+                    <div class="space-y-6">
+                        <!-- Simple Vessel Header (BLUE THEME) -->
+                        <div class="flex items-center space-x-4 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                            <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold text-blue-600">${vessel.name || 'Unknown'}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Simple Vessel Details Grid -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <p class="text-sm font-medium text-gray-600">Voyage</p>
+                                <p class="text-2xl font-bold text-gray-900">${voyages.length > 0 ? voyages[0] : 'N/A'}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-sm font-medium text-gray-600">Loading</p>
+                                <p class="text-2xl font-bold text-gray-900">${loadingPort}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-sm font-medium text-gray-600">Discharge</p>
+                                <p class="text-2xl font-bold text-gray-900">${dischargePort}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-sm font-medium text-gray-600">ATD</p>
+                                <p class="text-2xl font-bold text-gray-900">${atd}</p>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-sm font-medium text-gray-600">ATA</p>
+                                <p class="text-2xl font-bold text-gray-900">${ata}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-2xl font-bold text-blue-600">${vessel.name || 'Unknown'}</p>
-                    </div>
-                </div>
-                
-                <!-- Simple Vessel Details Grid -->
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-600">Voyage</p>
-                        <p class="text-2xl font-bold text-gray-900">${voyages.length > 0 ? voyages[0] : 'N/A'}</p>
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-600">Loading</p>
-                        <p class="text-2xl font-bold text-gray-900">${loadingPort}</p>
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-600">Discharge</p>
-                        <p class="text-2xl font-bold text-gray-900">${dischargePort}</p>
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-600">ATD</p>
-                        <p class="text-2xl font-bold text-gray-900">${atd}</p>
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-600">ATA</p>
-                        <p class="text-2xl font-bold text-gray-900">${ata}</p>
-                    </div>
-                </div>
-            </div>
-            
-            ${index < trackingData.vessels.length - 1 ? '<hr class="border-gray-200 my-8">' : ''}
-        `;
+                    
+                    ${index < trackingData.vessels.length - 1 ? '<hr class="border-gray-200 my-8">' : ''}
+                `;
             });
 
             html += '</div>';
@@ -687,18 +686,16 @@
                     <div class="space-y-8">
                         <!-- Container Header -->
                         <div class="flex items-center space-x-4 p-6 bg-gray-50 rounded-2xl">
-                            <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+                            <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                 </svg>
                             </div>
                             <div>
                                 <h3 class="text-lg font-medium text-gray-700">Container</h3>
-                                <p class="text-2xl font-bold text-green-600">${containerData.number || 'Unknown'}</p>
+                                <p class="text-2xl font-bold text-blue-600">${containerData.number || 'Unknown'}</p>
                             </div>
                         </div>
-                        
-                        
                 `;
 
                 // Add container events timeline if available
@@ -838,7 +835,7 @@
             showLoading();
 
             try {
-                const response = await fetch('{{ route("dashboard.search") }}', {
+                const response = await fetch('{{ route("dashboard-db.search") }}', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -855,10 +852,10 @@
                 if (response.ok && result.status === 'success') {
                     hideLoading();
                     displayTrackingData(result.data);
-                    showMessage('success', `Tracking data loaded successfully for BL ${blNumber}!`);
+                    showMessage('success', `Tracking data loaded successfully from database for BL ${blNumber}!`);
                 } else {
                     hideLoading();
-                    showMessage('error', result.error || 'Failed to fetch tracking data');
+                    showMessage('error', result.error || 'Failed to fetch tracking data from database');
                 }
             } catch (error) {
                 hideLoading();

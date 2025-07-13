@@ -20,7 +20,7 @@ class DashboardSearatesAPI extends Controller
             'bl_number' => 'required|string|max:50'
         ]);
 
-        $apiKey = env("API_KEYY");
+        $apiKey = "K-C4091E4C-BB10-4D78-8011-AEB295B2BC82";
         $blNumber = strtoupper(trim($request->input('bl_number')));
 
         // Cek apakah API key tersedia
