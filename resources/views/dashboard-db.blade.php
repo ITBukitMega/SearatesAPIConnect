@@ -808,9 +808,32 @@
             // Update header info
             document.getElementById('blDisplay').textContent = `BL ${data.metadata.number}`;
 
-            const containerInfo = data.containers?.[0] ?
-                `${data.containers[0].size_type || 'Container'}` :
-                'Container';
+            // Count containers by size_type
+            let containerCounts = {};
+            if (data.containers && data.containers.length > 0) {
+                data.containers.forEach(container => {
+                    const sizeType = container.size_type || 'Unknown';
+                    if (!containerCounts[sizeType]) {
+                        containerCounts[sizeType] = 1;
+                    } else {
+                        containerCounts[sizeType]++;
+                    }
+                });
+            }
+
+            // Format teks info container
+            const containerInfo = data.containers?.length > 0 ?
+                (() => {
+                    // Ambil size_type dari container pertama
+                    const firstSizeType = data.containers[0].size_type || 'Container';
+                    // Hitung jumlah container dengan tipe yang sama
+                    const count = containerCounts[firstSizeType] || 1;
+
+                    // Tampilin format "jumlah x tipe" untuk semua container
+                    return `${count} x ${firstSizeType}`;
+                })() :
+                ''; // String kosong jika tidak ada container
+                
             document.getElementById('containerInfo').textContent = containerInfo;
             document.getElementById('statusDisplay').textContent = data.metadata.status || 'Unknown';
 
