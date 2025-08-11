@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DtlRoute extends Model
+class API_Route extends Model
 {
-    public $table = 'Dtl_Route';
+    public $table = 'API_Route';
     protected $primaryKey = 'id';
     public $timestamps = false;
 

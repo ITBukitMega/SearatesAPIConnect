@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DtlVessel extends Model
+class API_Vessel extends Model
 {
-    public $table = 'DtlVessel';
+    public $table = 'API_Vessel';
     protected $primaryKey = 'id';
     public $timestamps = false;
 

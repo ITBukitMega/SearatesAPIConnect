@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DtlEvents extends Model
+class API_Events extends Model
 {
-    public $table = 'DtlEvents';
+    public $table = 'API_Events';
     protected $primaryKey = 'id';
     public $timestamps = false;
 

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DtlLocation extends Model
+class API_Locations extends Model
 {
-    public $table = "DtlLocation";
+    public $table = "API_Locations";
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DtlContainer extends Model
+class API_Container extends Model
 {
-    public $table = 'DtlContainer';
+    public $table = 'API_Container';
     public $incrementing = false;
     public $timestamps = false;
 

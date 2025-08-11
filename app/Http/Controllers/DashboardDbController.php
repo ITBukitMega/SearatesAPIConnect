@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\API_Container;
+use App\Models\API_Events;
+use App\Models\API_Locations;
+use App\Models\API_Route;
+use App\Models\API_Vessel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\MstTracking;
@@ -39,11 +44,11 @@ class DashboardDbController extends Controller
             }
 
             // Ambil semua data terkait
-            $containers = DtlContainer::where('blnumber', $blNumber)->get();
-            $events = DtlEvents::where('blnumber', $blNumber)->orderBy('order_id')->get();
-            $locations = DtlLocation::where('blnumber', $blNumber)->get();
-            $vessels = DtlVessel::where('blnumber', $blNumber)->get();
-            $routes = DtlRoute::where('blnumber', $blNumber)->get();
+            $containers = API_Container::where('blnumber', $blNumber)->get();
+            $events = API_Events::where('blnumber', $blNumber)->orderBy('order_id')->get();
+            $locations = API_Locations::where('blnumber', $blNumber)->get();
+            $vessels = API_Vessel::where('blnumber', $blNumber)->get();
+            $routes = API_Route::where('blnumber', $blNumber)->get();
 
             // Format data EXACT seperti API response Searates
             $response = [

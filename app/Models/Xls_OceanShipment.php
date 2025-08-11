@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserTesting extends Model
+class Xls_OceanShipment extends Model
 {
-    use HasFactory;
+
+    public $table = "Xls_OceanShipment";
 
     protected $fillable = [
         "booking_number",

@@ -7,6 +7,7 @@ use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\StoreUserTestingRequest;
 use App\Http\Requests\UpdateUserTestingRequest;
+use App\Models\Xls_OceanShipment;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -69,7 +70,7 @@ class UserTestingController extends Controller
    /**
     * Display the specified resource.
     */
-   public function show(UserTesting $userTesting)
+   public function show(Xls_OceanShipment $userTesting)
    {
        //
    }
@@ -77,7 +78,7 @@ class UserTestingController extends Controller
    /**
     * Show the form for editing the specified resource.
     */
-   public function edit(UserTesting $userTesting)
+   public function edit(Xls_OceanShipment $userTesting)
    {
        //
    }
@@ -85,7 +86,7 @@ class UserTestingController extends Controller
    /**
     * Update the specified resource in storage.
     */
-   public function update(UpdateUserTestingRequest $request, UserTesting $userTesting)
+   public function update(UpdateUserTestingRequest $request, Xls_OceanShipment $userTesting)
    {
        //
    }
@@ -93,7 +94,7 @@ class UserTestingController extends Controller
    /**
     * Remove the specified resource from storage.
     */
-   public function destroy(UserTesting $userTesting)
+   public function destroy(Xls_OceanShipment $userTesting)
    {
        //
    }

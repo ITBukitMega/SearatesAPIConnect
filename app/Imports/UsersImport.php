@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\UserTesting;
+use App\Models\Xls_OceanShipment;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Validation\ValidationException;
@@ -32,7 +33,7 @@ class UsersImport implements ToModel, WithStartRow
 
         //Cek satu2 kalau ada yang sama aja booking number nya maka data gabisa masuk ke db semua
         $booking_number = (string)$row[0];
-        if(UserTesting::where('booking_number', $booking_number)->exists()) {
+        if(Xls_OceanShipment::where('booking_number', $booking_number)->exists()) {
             throw ValidationException::withMessages([
                 'file' => ["Booking Number {$booking_number} sudah ada di database"]
             ]);
@@ -54,7 +55,7 @@ class UsersImport implements ToModel, WithStartRow
                 return null;
             }
         };
-        return new UserTesting([
+        return new Xls_OceanShipment([
             'booking_number' => $row[0],
             'ocean_line' => $row[1],
             'shipment_reference' => $row[2],

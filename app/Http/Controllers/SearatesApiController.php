@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\API_Container;
+use App\Models\API_Events;
+use App\Models\API_Locations;
+use App\Models\API_Route;
+use App\Models\API_Vessel;
 use App\Models\DtlContainer;
 use App\Models\DtlEvents;
 use App\Models\DtlLocation;
@@ -41,11 +46,11 @@ class SearatesApiController extends Controller
 
                 // Hapus data lama untuk BL Number ini
                 MstTracking::where('blnumber', $blNumber)->delete();
-                DtlContainer::where('blnumber', $blNumber)->delete();
-                DtlEvents::where('blnumber', $blNumber)->delete();
-                DtlLocation::where('blnumber', $blNumber)->delete();
-                DtlRoute::where('blnumber', $blNumber)->delete();
-                DtlVessel::where('blnumber', $blNumber)->delete();
+                API_Container::where('blnumber', $blNumber)->delete();
+                API_Events::where('blnumber', $blNumber)->delete();
+                API_Locations::where('blnumber', $blNumber)->delete();
+                API_Route::where('blnumber', $blNumber)->delete();
+                API_Vessel::where('blnumber', $blNumber)->delete();
 
                 // Simpan ke database
                 MstTracking::create([
@@ -59,7 +64,7 @@ class SearatesApiController extends Controller
 
                 //Simpan Detail Location
                 foreach ($data['locations'] as $location) {
-                    DtlLocation::create([
+                    API_Locations::create([
                         'api_id' => $location['id'],
                         'blnumber' => $blNumber,
                         'locode' => $location['locode'] ?? null,
@@ -76,7 +81,7 @@ class SearatesApiController extends Controller
 
                 //Simpan Detail Vessel
                 foreach ($data['vessels'] as $vessel) {
-                    DtlVessel::create([
+                    API_Vessel::create([
                         'blnumber' => $blNumber,
                         'api_id' => $vessel['id'] ?? null,
                         'name' => $vessel['name'] ?? null,
@@ -90,7 +95,7 @@ class SearatesApiController extends Controller
 
                 //Simpan Detail Container & Eventsnya
                 foreach ($data['containers'] as $container) {
-                    DtlContainer::create([
+                    API_Container::create([
                         'blnumber' => $blNumber,
                         'number' => $container['number'],
                         'iso_code' => $container['iso_code'],
@@ -100,7 +105,7 @@ class SearatesApiController extends Controller
                     ]);
 
                     foreach ($container['events'] ?? [] as $event) {
-                        DtlEvents::create([
+                        API_Events::create([
                             'blnumber' => $blNumber,
                             'no_container' => $container['number'],
                             'order_id' => $event['order_id'],
@@ -132,7 +137,7 @@ class SearatesApiController extends Controller
 
                 foreach ($routeTypes as $type => $key) {
                     if (isset($data['route'][$key])) {
-                        DtlRoute::create([
+                        API_Route::create([
                             'blnumber' => $blNumber,
                             'route_type' => $type,
                             'location' => $data['route'][$key]['location'],
