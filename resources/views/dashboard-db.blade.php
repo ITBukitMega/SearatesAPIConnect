@@ -82,8 +82,107 @@
 
 <body class="h-full bg-gradient-to-br from-blue-50 via-white to-purple-50 font-sans">
 
+    <!-- COPY PASTE INI KE DASHBOARD-DB.BLADE.PHP SETELAH <body> TAG -->
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg">
+        <!-- Sidebar Header -->
+        <div class="flex items-center justify-between h-20 px-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                    </svg>
+                </div>
+                <span class="text-white font-bold text-lg">BM Logistics</span>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-white hover:bg-white/10 rounded-lg p-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 px-6 py-8">
+            <ul class="space-y-3">
+                <!-- Dashboard -->
+                <li>
+                    <a href="{{ route('dashboard-db') }}"
+                        class="nav-link flex items-center space-x-3 px-4 py-3 text-blue-700 bg-blue-50 rounded-xl border-r-4 border-blue-600 font-medium">
+                        <div class="w-5 h-5 text-blue-600">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <span>Container Tracking</span>
+                    </a>
+                </li>
+
+                
+
+                <!-- Divider -->
+                <li class="pt-6">
+                    <hr class="border-gray-200">
+                </li>
+
+                <!-- Shipment Sidebar -->
+                <li class="pt-6">
+                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Shipments</p>
+                </li>
+
+                <!-- Import Data -->
+                <li>
+                    <a href="{{ route('excel-import') }}"
+                        class="nav-link flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 group font-medium">
+                        <div class="w-5 h-5 text-gray-400 group-hover:text-purple-600 transition-colors">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <span>Import Shipments</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link flex items-center space-x-3 px-4 py-3 text-gray-400 rounded-xl cursor-not-allowed font-medium">
+                        <div class="w-5 h-5">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                            </svg>
+                        </div>
+                        <span>Road Shipments</span>
+                        <span class="ml-auto text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">Soon</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="p-6 border-t border-gray-200">
+            <div class="flex items-center space-x-3 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm">BM</span>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-gray-900">IT BukitMega</p>
+                    <p class="text-xs text-gray-500">IT Dashboard</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+    <!-- Mobile Sidebar Toggle Button -->
+    <button onclick="openSidebar()" class="fixed top-4 left-4 z-30 lg:hidden bg-white rounded-lg shadow-lg p-3 border border-gray-200 hover:bg-gray-50 transition-colors">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
     <!-- Main Container -->
-    <div class="min-h-screen">
+    <div class="lg:pl-64 min-h-screen">
         <!-- Header -->
         <header class="pt-8 pb-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -833,7 +932,7 @@
                     return `${count} x ${firstSizeType}`;
                 })() :
                 ''; // String kosong jika tidak ada container
-                
+
             document.getElementById('containerInfo').textContent = containerInfo;
             document.getElementById('statusDisplay').textContent = data.metadata.status || 'Unknown';
 
@@ -903,6 +1002,37 @@
         // Focus on input when page loads
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('blNumber').focus();
+        });
+
+        // Sidebar functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebar-backdrop').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-backdrop').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        }
+
+        // Close sidebar when clicking on nav links (mobile)
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    closeSidebar();
+                }
+            });
         });
     </script>
 </body>

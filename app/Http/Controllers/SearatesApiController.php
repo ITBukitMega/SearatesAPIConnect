@@ -36,7 +36,7 @@ class SearatesApiController extends Controller
 
             $blNumber = $data['metadata']['number'];
 
-            // Gunakan transaction untuk memastikan consistency
+            // Menggunakan transaction untuk memastikan consistency
             DB::transaction(function () use ($data, $blNumber) {
 
                 // Hapus data lama untuk BL Number ini
