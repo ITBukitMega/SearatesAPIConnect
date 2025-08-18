@@ -10,7 +10,6 @@ class API_Route extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-
     protected $fillable = [
         'blnumber',
         'route_type',
@@ -19,4 +18,10 @@ class API_Route extends Model
         'actual',
         'predictive_eta'
     ];
+
+    // Relationship dengan API_Locations (opsional, kalau mau pakai)
+    public function locationDetail()
+    {
+        return $this->belongsTo(API_Locations::class, 'location', 'api_id');
+    }
 }
