@@ -7,6 +7,10 @@
     <title>Container Tracking Dashboard | BM Logistics</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -80,10 +84,50 @@
 
         /* Advanced Background Effects */
         .bg-pattern {
-            background-image: 
+            background-image:
                 radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+        }
+
+        /* Map Styles */
+        .map-container {
+            height: 500px;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .leaflet-control-attribution {
+            font-size: 10px !important;
+        }
+
+        .custom-marker-icon {
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Custom Location Marker Styles */
+        .custom-location-marker {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Ensure location labels are visible above map elements */
+        .custom-location-marker .bg-green-500,
+        .custom-location-marker .bg-blue-500,
+        .custom-location-marker .bg-red-500 {
+            z-index: 1000;
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Custom popup styling */
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
@@ -97,7 +141,7 @@
     <div class="lg:pl-64 min-h-screen">
         <!-- Spacer for user greeting -->
         <div class="h-20"></div>
-        
+
         <!-- Header -->
         <header class="pt-8 pb-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -232,6 +276,9 @@
                             <button onclick="switchTab('route')" data-tab="route" class="tab-btn flex-1 py-4 px-6 text-center font-semibold transition-all duration-200 border-b-2 border-blue-500 text-blue-600 bg-white">
                                 Route
                             </button>
+                            <button onclick="switchTab('map')" data-tab="map" class="tab-btn flex-1 py-4 px-6 text-center font-semibold transition-all duration-200 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50">
+                                Map
+                            </button>
                             <button onclick="switchTab('vessel')" data-tab="vessel" class="tab-btn flex-1 py-4 px-6 text-center font-semibold transition-all duration-200 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:bg-white/50">
                                 Vessel
                             </button>
@@ -253,6 +300,9 @@
     <script>
         let trackingData = null;
         let currentTab = 'route';
+        let map = null;
+        let routeLine = null;
+        let markers = [];
 
         // Format date fungsi
         function formatDate(dateString) {
@@ -373,6 +423,11 @@
 
             // Update content
             renderTabContent();
+
+            // Initialize map if switching to map tab
+            if (tabName === 'map') {
+                setTimeout(initializeMap, 100);
+            }
         }
 
         // Render route overview
@@ -452,6 +507,9 @@
             switch (currentTab) {
                 case 'route':
                     renderRouteContent(container);
+                    break;
+                case 'map':
+                    renderMapContent(container);
                     break;
                 case 'vessel':
                     renderVesselContent(container);
@@ -538,7 +596,277 @@
             container.innerHTML = html;
         }
 
-        // Simple Vessel Logic - No complex badges, just the core logic (BLUE THEME)
+        // Render Map Content
+        function renderMapContent(container) {
+            if (!trackingData?.locations?.length) {
+                container.innerHTML = `
+            <div class="text-center py-20">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 013.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">No Location Data</h3>
+                <p class="text-gray-500">No location data is available to display on the map.</p>
+            </div>
+        `;
+                return;
+            }
+
+            container.innerHTML = `
+        <div class="space-y-6">
+            <!-- Map Header -->
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-bold text-gray-900">Shipment Route Map</h3>
+                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                    <div class="flex items-center space-x-1">
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span>Origin</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span>Transit</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span>Destination</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Map Container -->
+            <div id="mapContainer" class="map-container"></div>
+            
+            <!-- Route Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6" id="routeSummary">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    `;
+        }
+
+        // Initialize Map
+        function initializeMap() {
+            if (!trackingData?.locations?.length) return;
+
+            // Destroy existing map if it exists
+            if (map) {
+                map.remove();
+                map = null;
+            }
+
+            // Clear existing markers
+            markers = [];
+
+            // Get unique locations from events in chronological order (latest api_id to earliest)
+            const routeLocations = getRouteLocations();
+
+            if (routeLocations.length === 0) return;
+
+            // Initialize map
+            const mapContainer = document.getElementById('mapContainer');
+            if (!mapContainer) return;
+
+            // Calculate bounds
+            const bounds = L.latLngBounds(routeLocations.map(loc => [loc.lat, loc.lng]));
+
+            // Create map
+            map = L.map(mapContainer, {
+                center: bounds.getCenter(),
+                zoom: 2,
+                zoomControl: true,
+                attributionControl: true
+            });
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add markers and route line
+            addMarkersAndRoute(routeLocations);
+
+            // Fit bounds with padding
+            if (routeLocations.length > 1) {
+                map.fitBounds(bounds, {
+                    padding: [20, 20]
+                });
+            } else {
+                map.setView([routeLocations[0].lat, routeLocations[0].lng], 8);
+            }
+
+            // Update route summary
+            updateRouteSummary(routeLocations);
+        }
+
+        // Get route locations in order (from events)
+        function getRouteLocations() {
+            if (!trackingData?.containers?.[0]?.events?.length) return [];
+
+            // Get unique location IDs from events in chronological order
+            const eventLocationIds = [];
+            const seenLocations = new Set();
+
+            // Sort events by order_id to get chronological order
+            const sortedEvents = [...trackingData.containers[0].events].sort((a, b) => a.order_id - b.order_id);
+
+            sortedEvents.forEach(event => {
+                if (!seenLocations.has(event.location)) {
+                    eventLocationIds.push(event.location);
+                    seenLocations.add(event.location);
+                }
+            });
+
+            // Map to actual location objects
+            const locations = [];
+            eventLocationIds.forEach(locationId => {
+                const location = trackingData.locations.find(loc => loc.id === locationId);
+                if (location && location.lat && location.lng) {
+                    locations.push(location);
+                }
+            });
+
+            return locations;
+        }
+
+        // Add markers and route line
+        // Add markers and route line
+        function addMarkersAndRoute(locations) {
+            if (locations.length === 0) return;
+
+            // Create route line coordinates
+            const routeCoordinates = locations.map(loc => [loc.lat, loc.lng]);
+
+            // Add route line
+            if (locations.length > 1) {
+                routeLine = L.polyline(routeCoordinates, {
+                    color: '#3b82f6',
+                    weight: 3,
+                    opacity: 0.8,
+                    dashArray: '10, 5'
+                }).addTo(map);
+            }
+
+            // Add markers with location labels
+            locations.forEach((location, index) => {
+                const isFirst = index === 0;
+                const isLast = index === locations.length - 1;
+
+                let markerColor, markerTitle, badgeColor;
+                if (isFirst) {
+                    markerColor = '#10b981'; // Green for origin
+                    markerTitle = 'Origin';
+                    badgeColor = 'bg-green-500';
+                } else if (isLast) {
+                    markerColor = '#ef4444'; // Red for destination
+                    markerTitle = 'Destination';
+                    badgeColor = 'bg-red-500';
+                } else {
+                    markerColor = '#3b82f6'; // Blue for transit
+                    markerTitle = 'Transit';
+                    badgeColor = 'bg-blue-500';
+                }
+
+                // Create marker with location name label
+                const markerIcon = L.divIcon({
+                    className: 'custom-location-marker',
+                    html: `
+                <div class="flex flex-col items-center">
+                    <!-- Location Label -->
+                    <div class="mb-1 px-3 py-1 ${badgeColor} text-white text-xs font-semibold rounded-full whitespace-nowrap shadow-lg">
+                        ${location.name}
+                    </div>
+                    <!-- Marker Pin -->
+                    <div style="
+                        width: 20px; 
+                        height: 20px; 
+                        background-color: ${markerColor}; 
+                        border: 2px solid white;
+                        border-radius: 50%;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                    "></div>
+                    <!-- Connection Line -->
+                    <div style="
+                        width: 1px;
+                        height: 8px;
+                        background-color: ${markerColor};
+                        margin-top: -2px;
+                    "></div>
+                </div>
+            `,
+                    iconSize: [150, 40], // Increased size to accommodate label
+                    iconAnchor: [75, 40] // Adjust anchor point for the label
+                });
+
+                // buat marker
+                const marker = L.marker([location.lat, location.lng], {
+                        icon: markerIcon
+                    })
+                    .addTo(map)
+                    .bindPopup(`
+                <div class="text-center">
+                    <div class="font-bold text-gray-900 text-lg">${location.name}</div>
+                    <div class="text-sm text-gray-600">${location.country}${location.country_code ? ' (' + location.country_code + ')' : ''}</div>
+                    ${location.locode ? `<div class="text-xs text-blue-600 mt-1">LOCODE: ${location.locode}</div>` : ''}
+                    <div class="inline-block px-2 py-1 ${badgeColor} text-white text-xs font-semibold rounded-full mt-2">
+                        ${markerTitle}
+                    </div>
+                </div>
+            `, {
+                        closeButton: false,
+                        className: 'custom-popup'
+                    });
+
+                markers.push(marker);
+            });
+        }
+
+        // Update route summary
+        function updateRouteSummary(locations) {
+            const summaryContainer = document.getElementById('routeSummary');
+            if (!summaryContainer || locations.length === 0) return;
+
+            let summaryHtml = '';
+
+            locations.forEach((location, index) => {
+                const isFirst = index === 0;
+                const isLast = index === locations.length - 1;
+
+                let badgeClass, badgeText;
+                if (isFirst) {
+                    badgeClass = 'bg-green-100 text-green-800';
+                    badgeText = 'Origin';
+                } else if (isLast) {
+                    badgeClass = 'bg-red-100 text-red-800';
+                    badgeText = 'Destination';
+                } else {
+                    badgeClass = 'bg-blue-100 text-blue-800';
+                    badgeText = 'Transit';
+                }
+
+                summaryHtml += `
+            <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeClass}">
+                            ${badgeText}
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-900 truncate">${location.name}</p>
+                        <p class="text-xs text-gray-600">${location.country}${location.country_code ? ' (' + location.country_code + ')' : ''}</p>
+                        ${location.locode ? `<p class="text-xs text-blue-600 mt-1">LOCODE: ${location.locode}</p>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+            });
+
+            summaryContainer.innerHTML = summaryHtml;
+        }
+
+        //Simple Logic Vessel, cuma core logic (theme nya biru!!!!!)
         function renderVesselContent(container) {
             if (!trackingData?.vessels?.length) {
                 container.innerHTML = `
@@ -858,6 +1186,13 @@
             document.getElementById('trackingResults').classList.remove('hidden');
             currentTab = 'route';
             renderTabContent();
+
+            // Clear existing map if any
+            if (map) {
+                map.remove();
+                map = null;
+                markers = [];
+            }
         }
 
         // Search tracking
@@ -917,7 +1252,72 @@
         // Focus on input when page loads
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('blNumber').focus();
+
+            // Check for auto-search parameter
+            checkForAutoSearch();
         });
+
+
+        // Function to check for BL number in URL and auto-search
+        function checkForAutoSearch() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const blNumber = urlParams.get('bl_number');
+
+            if (blNumber) {
+                // Fill the input field
+                const blInput = document.getElementById('blNumber');
+                if (blInput) {
+                    blInput.value = blNumber.toUpperCase();
+
+                    // Show auto-search notification
+                    showMessage('info', `Auto-searching for BL: ${blNumber}`);
+
+                    // Auto-trigger search after a short delay
+                    setTimeout(() => {
+                        searchTracking();
+                        // Clean URL after search to remove parameter
+                        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                        window.history.replaceState({}, document.title, newUrl);
+                    }, 1000);
+                }
+            }
+        }
+
+        // Enhanced notification function
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'from-green-500 to-emerald-600',
+                error: 'from-red-500 to-rose-600',
+                info: 'from-blue-500 to-indigo-600',
+                warning: 'from-yellow-500 to-orange-600'
+            };
+
+            const notification = document.createElement('div');
+            notification.className = `fixed top-6 right-6 z-50 p-4 rounded-xl text-white font-semibold shadow-2xl transform translate-x-full transition-transform duration-300 bg-gradient-to-r ${colors[type]}`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
     </script>
 </body>
 

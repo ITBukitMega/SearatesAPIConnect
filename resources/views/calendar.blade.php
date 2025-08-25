@@ -739,104 +739,233 @@
             }
         }
 
-        // Enhanced event details with premium modal
-        function showEventDetails(event) {
-            const eventType = event.extendedProps.type;
-            const eventDate = event.start;
-            const blNumbers = event.extendedProps.bl_numbers;
-            const count = event.extendedProps.count;
-            
-            const iconColor = eventType === 'departure' ? '#ef4444' : '#10b981';
-            const bgGradient = eventType === 'departure' 
-                ? 'linear-gradient(135deg, #fef2f2, #fee2e2)' 
-                : 'linear-gradient(135deg, #f0fdf4, #dcfce7)';
-            
-            Swal.fire({
-                title: `<div style="background: ${bgGradient}; padding: 1rem; border-radius: 1rem; margin: -1rem -1rem 1rem -1rem;">
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
-                        <div style="width: 3rem; height: 3rem; background: ${iconColor}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${eventType === 'departure' ? 'M17 8l4 4m0 0l-4 4m4-4H3' : 'M7 8l-4 4m0 0l4 4m0-4h18'}"/>
+        // Enhanced event details function with clickable BL Numbers
+function showEventDetails(event) {
+    const eventType = event.extendedProps.type;
+    const eventDate = event.start;
+    const blNumbers = event.extendedProps.bl_numbers;
+    const count = event.extendedProps.count;
+    
+    const iconColor = eventType === 'departure' ? '#ef4444' : '#10b981';
+    const bgGradient = eventType === 'departure' 
+        ? 'linear-gradient(135deg, #fef2f2, #fee2e2)' 
+        : 'linear-gradient(135deg, #f0fdf4, #dcfce7)';
+    
+    // Split BL numbers and create clickable list
+    const blNumbersList = blNumbers.split(', ').map(bl => {
+        const trimmedBl = bl.trim();
+        return `<div style="padding: 0.75rem; margin: 0.5rem 0; background: ${eventType === 'departure' ? '#fef2f2' : '#f0fdf4'}; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem; font-weight: 600; color: #374151; border-left: 4px solid ${iconColor}; cursor: pointer; transition: all 0.3s ease; position: relative;" 
+                    class="bl-number-item" 
+                    onclick="trackBlNumber('${trimmedBl}')"
+                    onmouseover="this.style.transform='translateX(8px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='none'">
+                <div style="display: flex; align-items: center; justify-content: between;">
+                    <span style="flex: 1;">${trimmedBl}</span>
+                    <svg style="width: 1rem; height: 1rem; color: ${iconColor}; margin-left: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                </div>
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transform: translateX(-100%); transition: transform 0.5s ease;" class="shine-effect"></div>
+            </div>`;
+    }).join('');
+    
+    Swal.fire({
+        title: `<div style="background: ${bgGradient}; padding: 1rem; border-radius: 1rem; margin: -1rem -1rem 1rem -1rem;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                <div style="width: 3rem; height: 3rem; background: ${iconColor}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${eventType === 'departure' ? 'M17 8l4 4m0 0l-4 4m4-4H3' : 'M7 8l-4 4m0 0l4 4m0-4h18'}"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 0;">${event.title}</h3>
+                    <p style="color: #6b7280; margin: 0; font-weight: 600;">${eventType === 'departure' ? 'Departure' : 'Arrival'} Details</p>
+                </div>
+            </div>
+        </div>`,
+        html: `
+            <div style="text-align: left; padding: 1rem;">
+                <div style="display: grid; gap: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.75rem;">
+                        <div style="width: 2.5rem; height: 2.5rem; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                         </div>
                         <div>
-                            <h3 style="font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 0;">${event.title}</h3>
-                            <p style="color: #6b7280; margin: 0; font-weight: 600;">${eventType === 'departure' ? 'Departure' : 'Arrival'} Details</p>
+                            <p style="font-weight: 700; color: #1f2937; margin: 0;">Schedule Date</p>
+                            <p style="color: #6b7280; margin: 0;">${new Date(eventDate).toLocaleDateString('en-GB', { 
+                                weekday: 'long', 
+                                year: 'numeric',
+                                month: 'long', 
+                                day: 'numeric' 
+                            })}</p>
                         </div>
                     </div>
-                </div>`,
-                html: `
-                    <div style="text-align: left; padding: 1rem;">
-                        <div style="display: grid; gap: 1.5rem;">
-                            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.75rem;">
-                                <div style="width: 2.5rem; height: 2.5rem; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p style="font-weight: 700; color: #1f2937; margin: 0;">Schedule Date</p>
-                                    <p style="color: #6b7280; margin: 0;">${new Date(eventDate).toLocaleDateString('en-GB', { 
-                                        weekday: 'long', 
-                                        year: 'numeric',
-                                        month: 'long', 
-                                        day: 'numeric' 
-                                    })}</p>
-                                </div>
-                            </div>
-                            
-                            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.75rem;">
-                                <div style="width: 2.5rem; height: 2.5rem; background: ${iconColor}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p style="font-weight: 700; color: #1f2937; margin: 0;">Total Count</p>
-                                    <p style="color: #6b7280; margin: 0;">${count} shipment${count > 1 ? 's' : ''}</p>
-                                </div>
-                            </div>
-                            
-                            <div style="padding: 1rem; background: #f8fafc; border-radius: 0.75rem;">
-                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                    <div style="width: 2.5rem; height: 2.5rem; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p style="font-weight: 700; color: #1f2937; margin: 0;">BL Numbers</p>
-                                        <p style="color: #6b7280; margin: 0; font-size: 0.875rem;">Bill of Lading identifiers</p>
-                                    </div>
-                                </div>
-                                <div style="max-height: 200px; overflow-y: auto; background: white; border-radius: 0.5rem; padding: 1rem; border: 1px solid #e5e7eb;">
-                                    ${blNumbers.split(', ').map(bl => 
-                                        `<div style="padding: 0.5rem; margin: 0.25rem 0; background: ${eventType === 'departure' ? '#fef2f2' : '#f0fdf4'}; border-radius: 0.375rem; font-family: monospace; font-size: 0.875rem; font-weight: 600; color: #374151; border-left: 3px solid ${iconColor};">${bl.trim()}</div>`
-                                    ).join('')}
-                                </div>
-                            </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.75rem;">
+                        <div style="width: 2.5rem; height: 2.5rem; background: ${iconColor}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p style="font-weight: 700; color: #1f2937; margin: 0;">Total Count</p>
+                            <p style="color: #6b7280; margin: 0;">${count} shipment${count > 1 ? 's' : ''}</p>
                         </div>
                     </div>
-                `,
-                showConfirmButton: true,
-                confirmButtonText: 'Close',
-                confirmButtonColor: iconColor,
-                width: '600px',
-                padding: '0',
-                background: 'rgba(255, 255, 255, 0.98)',
-                backdrop: 'rgba(0, 0, 0, 0.4)',
-                showClass: {
-                    popup: 'animate__animated animate__zoomIn animate__faster'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__zoomOut animate__faster'
-                },
-                customClass: {
-                    popup: 'rounded-2xl shadow-2xl border border-white/20',
-                    confirmButton: 'rounded-xl font-bold px-8 py-3 text-lg'
-                }
+                    
+                    <div style="padding: 1rem; background: #f8fafc; border-radius: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="width: 2.5rem; height: 2.5rem; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p style="font-weight: 700; color: #1f2937; margin: 0;">BL Numbers</p>
+                                <p style="color: #6b7280; margin: 0; font-size: 0.875rem;">Click any BL Number to track container</p>
+                            </div>
+                        </div>
+                        <div style="max-height: 300px; overflow-y: auto; background: white; border-radius: 0.5rem; padding: 1rem; border: 1px solid #e5e7eb;">
+                            ${blNumbersList}
+                        </div>
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <svg style="width: 1.25rem; height: 1.25rem; color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span style="color: #92400e; font-size: 0.875rem; font-weight: 600;">Click any BL Number above to open container tracking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `,
+        showConfirmButton: true,
+        confirmButtonText: 'Close',
+        confirmButtonColor: iconColor,
+        width: '700px',
+        padding: '0',
+        background: 'rgba(255, 255, 255, 0.98)',
+        backdrop: 'rgba(0, 0, 0, 0.4)',
+        showClass: {
+            popup: 'animate__animated animate__zoomIn animate__faster'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__zoomOut animate__faster'
+        },
+        customClass: {
+            popup: 'rounded-2xl shadow-2xl border border-white/20',
+            confirmButton: 'rounded-xl font-bold px-8 py-3 text-lg'
+        },
+        didOpen: () => {
+            // Add hover effects to BL number items
+            const blItems = document.querySelectorAll('.bl-number-item');
+            blItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    const shineEffect = this.querySelector('.shine-effect');
+                    if (shineEffect) {
+                        shineEffect.style.transform = 'translateX(100%)';
+                    }
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    const shineEffect = this.querySelector('.shine-effect');
+                    if (shineEffect) {
+                        setTimeout(() => {
+                            shineEffect.style.transform = 'translateX(-100%)';
+                        }, 500);
+                    }
+                });
             });
         }
+    });
+}
+
+// Function to handle BL Number tracking
+function trackBlNumber(blNumber) {
+    // Show loading state
+    Swal.fire({
+        title: 'Redirecting...',
+        html: `Opening container tracking for <strong>${blNumber}</strong>`,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        background: 'rgba(255, 255, 255, 0.98)',
+        customClass: {
+            popup: 'rounded-2xl shadow-2xl border border-white/20'
+        },
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Create URL with BL number parameter
+    const dashboardUrl = `${window.location.origin}/dashboard-db?bl_number=${encodeURIComponent(blNumber)}`;
+    
+    // Small delay for better UX
+    setTimeout(() => {
+        window.location.href = dashboardUrl;
+    }, 800);
+}
+
+// Function to check for BL number in URL and auto-search
+function checkForAutoSearch() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const blNumber = urlParams.get('bl_number');
+    
+    if (blNumber) {
+        // Fill the input field
+        const blInput = document.getElementById('blNumber');
+        if (blInput) {
+            blInput.value = blNumber;
+            
+            // Show auto-search notification
+            showNotification(`Auto-searching for BL: ${blNumber}`, 'info');
+            
+            // Auto-trigger search after a short delay
+            setTimeout(() => {
+                searchTracking();
+                // Clean URL after search
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }, 1000);
+        }
+    }
+}
+
+// Enhanced notification function (if not already exists)
+function showNotification(message, type = 'info') {
+    const colors = {
+        success: 'from-green-500 to-emerald-600',
+        error: 'from-red-500 to-rose-600',
+        info: 'from-blue-500 to-indigo-600',
+        warning: 'from-yellow-500 to-orange-600'
+    };
+    
+    const notification = document.createElement('div');
+    notification.className = `fixed top-6 right-6 z-50 p-4 rounded-xl text-white font-semibold shadow-2xl transform translate-x-full transition-transform duration-300 bg-gradient-to-r ${colors[type]}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 4000);
+}
+
+// Add to dashboard-db page initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing initialization code...
+    
+    // Check for auto-search parameter
+    checkForAutoSearch();
+});
 
         // Add notification system
         function showNotification(message, type = 'info') {
