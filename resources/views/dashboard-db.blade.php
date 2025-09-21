@@ -731,7 +731,6 @@
         }
 
         // Add markers and route line
-        // Add markers and route line
         function addMarkersAndRoute(locations) {
             if (locations.length === 0) return;
 

@@ -19,12 +19,25 @@
 
     <!-- Navigation Menu -->
     <nav class="flex-1 px-6 py-8">
-        <ul class="space-y-4">
+        <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
+                <a href="#"
+                    class="nav-link flex items-center space-x-4 px-4 py-3 text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-800 transition-all duration-300 group font-semibold">
+                    <div class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10z" />
+                        </svg>
+                    </div>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Container Tracking -->
+            <li>
                 <a href="{{ route('dashboard-db') }}"
-                    class="nav-link flex items-center space-x-4 px-4 py-4 text-gray-700 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 group font-semibold {{ request()->routeIs('dashboard-db') ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 border-r-4 border-blue-600 shadow-lg' : '' }}">
-                    <div class="w-6 h-6 {{ request()->routeIs('dashboard-db') ? 'text-white' : 'text-gray-400 group-hover:text-blue-600' }} transition-colors">
+                    class="nav-link flex items-center space-x-4 px-4 py-3 text-gray-700 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 group font-semibold {{ request()->routeIs('dashboard-db') ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg' : '' }}">
+                    <div class="w-5 h-5 {{ request()->routeIs('dashboard-db') ? 'text-white' : 'text-gray-400 group-hover:text-blue-600' }} transition-colors">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
@@ -33,11 +46,98 @@
                 </a>
             </li>
 
+            <!-- Add Shipments with Submenu -->
+            <li>
+                <button onclick="toggleSubmenu('add-shipments')"
+                    class="nav-link w-full flex items-center space-x-4 px-4 py-3 text-gray-700 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 transition-all duration-300 group font-semibold">
+                    <div class="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                    </div>
+                    <span class="flex-1 text-left">Add Shipments</span>
+                    <div class="w-4 h-4 text-gray-400 transition-transform duration-200" id="add-shipments-arrow">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </button>
+                <!-- Submenu -->
+                <ul id="add-shipments-submenu" class="ml-6 mt-2 space-y-1 hidden">
+                    <li>
+                        <a href="#"
+                            class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 transition-all duration-200 font-medium text-sm">
+                            <div class="w-4 h-4 text-gray-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </div>
+                            <span>Add Ocean Shipments Manually</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('excel-import') }}"
+                            class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 transition-all duration-200 font-medium text-sm {{ request()->routeIs('excel-import') ? 'text-emerald-600 bg-emerald-50' : '' }}">
+                            <div class="w-4 h-4 text-gray-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                            </div>
+                            <span>Import Ocean Shipments</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Shipments with Submenu -->
+            <li>
+                <button onclick="toggleSubmenu('shipments')"
+                    class="nav-link w-full flex items-center space-x-4 px-4 py-3 text-gray-700 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition-all duration-300 group font-semibold">
+                    <div class="w-5 h-5 text-gray-400 group-hover:text-purple-600 transition-colors">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                    </div>
+                    <span class="flex-1 text-left">Shipments</span>
+                    <div class="w-4 h-4 text-gray-400 transition-transform duration-200" id="shipments-arrow">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </button>
+                <!-- Submenu -->
+                <ul id="shipments-submenu" class="ml-6 mt-2 space-y-1 hidden">
+                    <li>
+                        <a href="#"
+                            class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-600 rounded-lg hover:bg-purple-50 hover:text-purple-600 transition-all duration-200 font-medium text-sm">
+                            <div class="w-4 h-4 text-gray-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                </svg>
+                            </div>
+                            <span>Ocean Shipments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                            class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-400 rounded-lg cursor-not-allowed font-medium text-sm">
+                            <div class="w-4 h-4 text-gray-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                </svg>
+                            </div>
+                            <span>Road Shipments</span>
+                            <span class="ml-auto text-xs bg-gradient-to-r from-purple-100 to-pink-100 text-purple-600 px-2 py-0.5 rounded-full font-bold">Soon</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <!-- Calendar -->
             <li>
                 <a href="{{ route('calendar') }}"
-                    class="nav-link flex items-center space-x-4 px-4 py-4 text-gray-700 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition-all duration-300 group font-semibold {{ request()->routeIs('calendar') ? 'text-white bg-gradient-to-r from-purple-600 to-pink-600 border-r-4 border-purple-600 shadow-lg' : '' }}">
-                    <div class="w-6 h-6 {{ request()->routeIs('calendar') ? 'text-white' : 'text-gray-400 group-hover:text-purple-600' }} transition-colors">
+                    class="nav-link flex items-center space-x-4 px-4 py-3 text-gray-700 rounded-xl hover:bg-pink-50 hover:text-pink-700 transition-all duration-300 group font-semibold {{ request()->routeIs('calendar') ? 'text-white bg-gradient-to-r from-pink-600 to-rose-600 shadow-lg' : '' }}">
+                    <div class="w-5 h-5 {{ request()->routeIs('calendar') ? 'text-white' : 'text-gray-400 group-hover:text-pink-600' }} transition-colors">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -45,46 +145,10 @@
                     <span>Calendar</span>
                 </a>
             </li>
-
-            <!-- Divider -->
-            <li class="pt-6">
-                <hr class="border-gray-200">
-            </li>
-
-            <!-- Shipment Section -->
-            <li class="pt-6">
-                <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Shipments</p>
-            </li>
-
-            <!-- Import Data -->
-            <li>
-                <a href="{{ route('excel-import') }}"
-                    class="nav-link flex items-center space-x-4 px-4 py-4 text-gray-700 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 transition-all duration-300 group font-semibold {{ request()->routeIs('excel-import') ? 'text-white bg-gradient-to-r from-emerald-600 to-teal-600 border-r-4 border-emerald-600 shadow-lg' : '' }}">
-                    <div class="w-6 h-6 {{ request()->routeIs('excel-import') ? 'text-white' : 'text-gray-400 group-hover:text-emerald-600' }} transition-colors">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                    </div>
-                    <span>Import Shipments</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="#" class="nav-link flex items-center space-x-4 px-4 py-4 text-gray-400 rounded-xl cursor-not-allowed font-semibold">
-                    <div class="w-6 h-6">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                        </svg>
-                    </div>
-                    <span>Road Shipments</span>
-                    <span class="ml-auto text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-purple-600 px-3 py-1 rounded-full font-bold">Soon</span>
-                </a>
-            </li>
         </ul>
     </nav>
 
-    
-
+    <div class="px-6 pb-6">
         <!-- Logout Button -->
         <button onclick="confirmLogout()" class="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold group">
             <svg class="w-5 h-5 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,6 +267,30 @@
             closeSidebar();
         }
     }
+
+    // Toggle submenu function
+    function toggleSubmenu(menuId) {
+        const submenu = document.getElementById(`${menuId}-submenu`);
+        const arrow = document.getElementById(`${menuId}-arrow`);
+        
+        if (submenu.classList.contains('hidden')) {
+            // Show submenu
+            submenu.classList.remove('hidden');
+            arrow.style.transform = 'rotate(90deg)';
+        } else {
+            // Hide submenu
+            submenu.classList.add('hidden');
+            arrow.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Auto-expand submenu if current route matches
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if we're on excel-import page and expand Add Shipments menu
+        if (window.location.href.includes('excel-import')) {
+            toggleSubmenu('add-shipments');
+        }
+    });
 
     // Enhanced logout confirmation
     function confirmLogout() {
