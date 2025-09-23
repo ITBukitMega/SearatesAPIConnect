@@ -65,7 +65,7 @@
                 <!-- Submenu -->
                 <ul id="add-shipments-submenu" class="ml-6 mt-2 space-y-1 hidden">
                     <li>
-                        <a href="#"
+                        <a href="{{ route('import-manual')}}"
                             class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 transition-all duration-200 font-medium text-sm">
                             <div class="w-4 h-4 text-gray-400">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,8 +108,8 @@
                 <!-- Submenu -->
                 <ul id="shipments-submenu" class="ml-6 mt-2 space-y-1 hidden">
                     <li>
-                        <a href="#"
-                            class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-600 rounded-lg hover:bg-purple-50 hover:text-purple-600 transition-all duration-200 font-medium text-sm">
+                        <a href="{{ route('ocean-shipments') }}"
+                            class="nav-link flex items-center space-x-3 px-4 py-2 text-gray-600 rounded-lg hover:bg-purple-50 hover:text-purple-600 transition-all duration-200 font-medium text-sm {{ request()->routeIs('ocean-shipments') ? 'text-purple-600 bg-purple-50' : '' }}">
                             <div class="w-4 h-4 text-gray-400">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />

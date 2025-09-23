@@ -5,6 +5,9 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardSearatesAPI;
 use App\Http\Controllers\DashboardDbController;
+use App\Http\Controllers\ImportManualOceanShipments;
+use App\Http\Controllers\OceanShipmentsController;
+use App\Http\Controllers\OceanShipmentsManualController;
 use App\Http\Controllers\SearatesApiController;
 use App\Http\Controllers\UserTestingController;
 
@@ -42,7 +45,13 @@ Route::post('/', [LoginController::class, 'login'])->name('login.process');
     Route::get('/insert-searates', function () {
         return view('searates');
     });
-// });
+
+    Route::get('/import-manual', [ImportManualOceanShipments::class, 'index'])->name('import-manual');
+    Route::post('import-manual-store', [ImportManualOceanShipments::class, 'store'])->name('import-manual.store');
+
+        // Ocean Shipments Routes
+    Route::get('/ocean-shipments', [OceanShipmentsController::class, 'index'])->name('ocean-shipments');
+    Route::post('/ocean-shipments/search', [OceanShipmentsController::class, 'search'])->name('ocean-shipments.search');
 
 // Redirect any other routes to login
 Route::fallback(function () {

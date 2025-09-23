@@ -24,7 +24,7 @@ class SearatesApiController extends Controller
     {
         $apiKey = "K-C4091E4C-BB10-4D78-8011-AEB295B2BC82";
         // MRKU8340485 SSLLCBLWCAA0379 ASC0447790 ASC0447792 CNB0280539 PGUCB25000883 PGUCB25000885 SSLKUSRGCAA0479 COAU7258683330
-        $number = "GTD0968392";
+        $number = "2764352325";
 
         $response = Http::get("https://tracking.searates.com/tracking", [
             'api_key' => $apiKey,
